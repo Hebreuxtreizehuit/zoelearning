@@ -253,11 +253,32 @@
       header h1 {
         font-size: 1.35rem;
       }
+      #installBtn{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#installBtn:hover{
+  background:#15803d;
+}
     }
   </style>
 </head>
 <body>
   <header>
+    <button id="installBtn" hidden>
+  Install App
+</button>
     <h1>Zoe Learning Profile</h1>
     <p>Personal learning app for strengths, needs, examples, strategies, and daily notes.</p>
   </header>
@@ -376,7 +397,33 @@
       notes[index] = value;
       localStorage.setItem("zoeLearningNotes", JSON.stringify(notes));
     }
+let deferredPrompt;
 
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+
+  deferredPrompt = e;
+
+  installBtn.hidden = false;
+});
+
+installBtn.addEventListener("click", async () => {
+
+  installBtn.hidden = true;
+
+  if (deferredPrompt) {
+
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    console.log(`User response: ${outcome}`);
+
+    deferredPrompt = null;
+  }
+});
     function renderCards() {
       const search = searchInput.value.toLowerCase();
       const selectedType = typeFilter.value;
