@@ -477,39 +477,43 @@
     }
 
     function exportNotes() {
-      const notes = getNotes();
-      const progressLevels = getProgressLevels();
-      let content = "Zoe Learning Profile Notes
+  const notes = getNotes();
+  const progressLevels = getProgressLevels();
 
-";
+  let content = "Zoe Learning Profile Notes\n\n";
 
-      profileData.forEach((item, index) => {
-        const note = notes[index];
-        const progress = progressLevels[index] || "";
-        if ((note && note.trim()) || progress) {
-          content += `${item.area} (${item.type} - ${item.category})
-`;
-          content += `Progress Level: ${progress || "Not selected"}
-`;
-          content += `Example: ${item.example}\n`;
-          content += `Strategy: ${item.strategy}\n`;
-          content += `Note: ${note || "No note added"}\n\n`;
-`;
-        }
-      });
+  profileData.forEach((item, index) => {
+    const note = notes[index];
+    const progress = progressLevels[index] || "";
 
-      if (content.trim() === "Zoe Learning Profile Notes") {
-        content += "No notes added yet.\n";
-      }
+    if ((note && note.trim()) || progress) {
 
-      const blob = new Blob([content], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "zoe-learning-profile-notes.txt";
-      a.click();
-      URL.revokeObjectURL(url);
+      content += `${item.area} (${item.type} - ${item.category})\n`;
+      content += `Progress Level: ${progress || "Not selected"}\n`;
+      content += `Example: ${item.example}\n`;
+      content += `Strategy: ${item.strategy}\n`;
+      content += `Note: ${note || "No note added"}\n\n`;
+
     }
+  });
+
+  if (content.trim() === "Zoe Learning Profile Notes") {
+    content += "No notes added yet.\n";
+  }
+
+  const blob = new Blob([content], {
+    type: "text/plain"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "zoe-learning-profile-notes.txt";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
 
     searchInput.addEventListener("input", renderCards);
     typeFilter.addEventListener("change", renderCards);
