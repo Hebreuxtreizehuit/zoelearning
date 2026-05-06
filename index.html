@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoe Learning Profile PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2563eb" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --strength: #dcfce7;
+      --strength-text: #166534;
+      --need: #fee2e2;
+      --need-text: #991b1b;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.7rem;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    .container {
+      width: min(1100px, 94%);
+      margin: 20px auto 80px;
+    }
+
+    .toolbar {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      display: grid;
+      grid-template-columns: 1fr 180px 180px;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    input, select, textarea, button {
+      font: inherit;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      border: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .badge.strength {
+      background: var(--strength);
+      color: var(--strength-text);
+    }
+
+    .badge.need {
+      background: var(--need);
+      color: var(--need-text);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .example {
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .strategy-title {
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .note-box {
+      margin-top: 10px;
+    }
+
+    .progress-row {
+      margin: 12px 0;
+    }
+
+    .progress-label {
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .progress-select.improving {
+      background: #dcfce7;
+      border-color: #86efac;
+    }
+
+    .progress-select.moderate {
+      background: #fef9c3;
+      border-color: #fde047;
+    }
+
+    .progress-select.concern {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    .note-box textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .secondary:hover {
+      background: #d1d5db;
+    }
+
+    .footer-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 800px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Zoe Learning Profile</h1>
+    <p>Personal learning app for strengths, needs, examples, strategies, and daily notes.</p>
+  </header>
+
+  <main class="container">
+    <section class="toolbar">
+      <input id="searchInput" type="search" placeholder="Search area, example, strategy, or note..." />
+      <select id="typeFilter">
+        <option value="all">All Types</option>
+        <option value="Strength">Strengths</option>
+        <option value="Need">Needs</option>
+      </select>
+      <select id="categoryFilter">
+        <option value="all">All Categories</option>
+        <option value="Communication">Communication</option>
+        <option value="Learning">Learning</option>
+        <option value="Behaviour">Behaviour</option>
+        <option value="Social">Social</option>
+        <option value="Independence">Independence</option>
+        <option value="Regulation">Regulation</option>
+      </select>
+    </section>
+
+    <section class="summary">
+      <div class="summary-card"><strong id="totalCount">0</strong>Total Areas</div>
+      <div class="summary-card"><strong id="strengthCount">0</strong>Strengths</div>
+      <div class="summary-card"><strong id="needCount">0</strong>Needs</div>
+    </section>
+
+    <section id="cardsGrid" class="grid"></section>
+  </main>
+
+  <section class="footer-actions">
+    <button onclick="exportNotes()">Export Notes</button>
+    <button class="secondary" onclick="print()">Print</button>
+    <button class="secondary" onclick="clearAllNotes()">Clear Notes</button>
+  </section>
+
+  <script>
+    const profileData = [
+      { area: "Receptive Language", type: "Strength", category: "Communication", example: "Understands simple instructions and responds appropriately when directions are clear.", strategy: "Continue using clear, short directions supported by visuals or gestures." },
+      { area: "Expressive Language", type: "Strength", category: "Communication", example: "Can express wants, needs, or feelings using words or short sentences.", strategy: "Encourage her to use words, choices, visuals, or a communication tool to express herself." },
+      { area: "Verbal Comprehension", type: "Strength", category: "Communication", example: "Understands familiar vocabulary and classroom discussions.", strategy: "Use familiar words first, then gradually introduce new vocabulary." },
+      { area: "Listening Skills", type: "Strength", category: "Communication", example: "Pays attention when familiar adults are speaking.", strategy: "Gain attention first, then give one instruction at a time." },
+      { area: "Social Communication", type: "Strength", category: "Social", example: "Greets familiar peers or adults appropriately.", strategy: "Practise greetings, turn-taking, and simple conversation routines." },
+      { area: "Social Skills", type: "Strength", category: "Social", example: "Participates in group activities with support.", strategy: "Use structured peer activities with clear roles." },
+      { area: "Initiative", type: "Strength", category: "Learning", example: "Begins familiar tasks independently.", strategy: "Offer predictable tasks and praise independent starts." },
+      { area: "Independent Work", type: "Strength", category: "Learning", example: "Completes assignments with minimal prompting.", strategy: "Use checklists and short work periods to build independence." },
+      { area: "Task Completion", type: "Strength", category: "Learning", example: "Finishes structured classroom activities.", strategy: "Break larger tasks into smaller steps with a clear finish point." },
+      { area: "Fine Motor Skills", type: "Strength", category: "Learning", example: "Uses pencils, scissors, or technology tools appropriately.", strategy: "Provide practice through writing, drawing, cutting, and typing activities." },
+      { area: "Ability to Follow Routines", type: "Strength", category: "Independence", example: "Follows the daily classroom schedule successfully.", strategy: "Use a visual schedule and review changes before they happen." },
+      { area: "Positive Response to Familiar Environments", type: "Strength", category: "Regulation", example: "Remains calmer in predictable settings.", strategy: "Keep routines predictable and prepare her before entering new settings." },
+      { area: "Visual Learning Abilities", type: "Strength", category: "Learning", example: "Learns better with pictures, charts, or demonstrations.", strategy: "Use images, icons, videos, and visual examples when teaching." },
+      { area: "Memory for Familiar Tasks", type: "Strength", category: "Learning", example: "Remembers repeated classroom routines.", strategy: "Repeat important routines until they become familiar." },
+      { area: "Ability to Work with Support", type: "Strength", category: "Social", example: "Responds positively to guidance from teachers or educational assistants.", strategy: "Pair support with encouragement and gradually reduce prompts." },
+      { area: "Cooperative Behaviour with Trusted Adults", type: "Strength", category: "Behaviour", example: "Accepts help from familiar school staff.", strategy: "Build trust through calm tone, consistency, and respectful choices." },
+      { area: "Creativity and Preferred Interests", type: "Strength", category: "Learning", example: "Shows enthusiasm in favourite subjects or hobbies.", strategy: "Use preferred interests as motivation for learning tasks." },
+      { area: "Persistence in Preferred Tasks", type: "Strength", category: "Learning", example: "Stays engaged longer in activities of interest.", strategy: "Connect non-preferred tasks to preferred activities when possible." },
+      { area: "Technology Engagement", type: "Strength", category: "Learning", example: "Uses tablets or computers effectively for learning.", strategy: "Use educational apps, typing, audio, and visuals to support learning." },
+      { area: "Ability to Learn Through Repetition", type: "Strength", category: "Learning", example: "Improves skills after repeated practice.", strategy: "Use repeated practice with small variations to build confidence." },
+      { area: "Curiosity and Willingness to Participate", type: "Strength", category: "Learning", example: "Shows interest in classroom discussions or activities.", strategy: "Offer safe opportunities to participate without pressure." },
+      { area: "Emerging Self-Advocacy Skills", type: "Strength", category: "Independence", example: "Asks for help when overwhelmed.", strategy: "Teach simple phrases such as ‘I need help’, ‘I need a break’, or ‘I do not understand’." },
+      { area: "Strength in Structured Environments", type: "Strength", category: "Regulation", example: "Performs better with clear expectations and routines.", strategy: "Keep expectations visible and consistent." },
+      { area: "Ability to Complete Predictable Tasks", type: "Strength", category: "Learning", example: "Works well when activities are familiar.", strategy: "Start with familiar tasks before adding new demands." },
+      { area: "Enjoyment of Praise and Encouragement", type: "Strength", category: "Behaviour", example: "Responds positively to positive reinforcement.", strategy: "Use specific praise such as ‘You waited calmly’ or ‘You finished your work’." },
+      { area: "Good Participation When Regulated", type: "Strength", category: "Regulation", example: "Participates more successfully on calm and organized days.", strategy: "Notice early signs of stress and provide breaks before escalation." },
+
+      { area: "Safe Movement Through School and Community", type: "Need", category: "Behaviour", example: "Requires supervision to move safely in hallways or public areas.", strategy: "Use planned routes, adult support, visual rules, and safety reminders." },
+      { area: "Communication Skills", type: "Need", category: "Communication", example: "May struggle to explain feelings or needs clearly.", strategy: "Teach simple communication scripts and offer visual choice boards." },
+      { area: "Impulsivity", type: "Need", category: "Behaviour", example: "Acts quickly without always thinking about consequences.", strategy: "Use pause cues, countdowns, and immediate positive feedback for safe choices." },
+      { area: "Adaptive Skills", type: "Need", category: "Independence", example: "Needs support with daily living or independence skills.", strategy: "Teach one life skill at a time using modelling and repeated practice." },
+      { area: "Reading Comprehension", type: "Need", category: "Learning", example: "Has difficulty understanding written passages or instructions.", strategy: "Use short texts, pictures, audio support, and comprehension questions." },
+      { area: "Self-Regulation and Self-Monitoring", type: "Need", category: "Regulation", example: "Needs reminders to calm down or recognize emotions.", strategy: "Use emotion scales, break cards, calm spaces, and breathing routines." },
+      { area: "Transition Skills", type: "Need", category: "Regulation", example: "Becomes upset when changing activities or locations.", strategy: "Use visual timers, warnings, first-then boards, and predictable routines." },
+      { area: "Obsessive Compulsive Behaviours", type: "Need", category: "Behaviour", example: "Repeats routines or behaviours excessively.", strategy: "Use gentle redirection, predictable routines, and professional support when needed." },
+      { area: "Anxiety Management", type: "Need", category: "Regulation", example: "Needs reassurance during stressful situations.", strategy: "Prepare her in advance, use calming routines, and reduce uncertainty." },
+      { area: "Emotional Regulation", type: "Need", category: "Regulation", example: "May cry, yell, or become frustrated when overwhelmed.", strategy: "Teach calming choices and provide support before emotions become too intense." },
+      { area: "Flexible Thinking", type: "Need", category: "Learning", example: "Finds it difficult when plans change unexpectedly.", strategy: "Practise small changes in safe ways and use social stories." },
+      { area: "Attention and Focus", type: "Need", category: "Learning", example: "Has difficulty staying focused for long periods.", strategy: "Use short tasks, movement breaks, and clear work goals." },
+      { area: "Organization Skills", type: "Need", category: "Learning", example: "Needs help organizing materials or assignments.", strategy: "Use labelled bins, checklists, folders, and daily routines." },
+      { area: "Problem-Solving Skills", type: "Need", category: "Learning", example: "Requires guidance to solve conflicts or challenges.", strategy: "Teach simple steps: stop, name the problem, choose a safe solution." },
+      { area: "Peer Interaction Challenges", type: "Need", category: "Social", example: "May struggle to maintain friendships or social boundaries.", strategy: "Use supervised peer activities and practise social rules explicitly." },
+      { area: "Sensory Regulation Needs", type: "Need", category: "Regulation", example: "Can become overwhelmed by noise, lights, or crowds.", strategy: "Offer quiet spaces, headphones, sensory breaks, or reduced stimulation." },
+      { area: "Safety Awareness", type: "Need", category: "Behaviour", example: "Needs reminders about personal and community safety.", strategy: "Practise safety rules with visuals, role-play, and consistent reminders." },
+      { area: "Functional Communication", type: "Need", category: "Communication", example: "May need support using appropriate communication in daily situations.", strategy: "Practise real-life phrases for help, breaks, pain, choices, and feelings." },
+      { area: "Community Independence Skills", type: "Need", category: "Independence", example: "Requires support when navigating public or community settings.", strategy: "Practise community routines step by step with adult supervision." },
+      { area: "Behaviour During Transitions", type: "Need", category: "Behaviour", example: "May resist stopping preferred activities.", strategy: "Use transition warnings, replacement choices, and a clear next activity." },
+      { area: "Managing Stress and Frustration", type: "Need", category: "Regulation", example: "Needs strategies to cope with disappointment or frustration.", strategy: "Teach safe coping options such as asking for help, taking a break, or using a calm tool." },
+      { area: "Generalization Across Settings", type: "Need", category: "Learning", example: "May apply skills at school but not at home or in the community.", strategy: "Practise the same skill in different places with similar language and visuals." },
+      { area: "Executive Functioning Skills", type: "Need", category: "Learning", example: "Needs help planning, sequencing, and completing tasks.", strategy: "Use step-by-step cards, visual schedules, and adult modelling." },
+      { area: "Coping with Noise or Crowded Environments", type: "Need", category: "Regulation", example: "Becomes anxious or dysregulated in busy settings.", strategy: "Prepare ahead, identify quiet exits, and use sensory tools." },
+      { area: "Daily Living and Life Skills Support", type: "Need", category: "Independence", example: "Requires teaching and practice for independence skills.", strategy: "Teach routines using modelling, visuals, repetition, and praise." }
+    ];
+
+    const cardsGrid = document.getElementById("cardsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const typeFilter = document.getElementById("typeFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+
+    function getNotes() {
+      return JSON.parse(localStorage.getItem("zoeLearningNotes") || "{}");
+    }
+
+    function getProgressLevels() {
+      return JSON.parse(localStorage.getItem("zoeProgressLevels") || "{}");
+    }
+
+    function saveProgressLevel(index, value) {
+      const levels = getProgressLevels();
+      levels[index] = value;
+      localStorage.setItem("zoeProgressLevels", JSON.stringify(levels));
+    }
+
+    function saveNote(index, value) {
+      const notes = getNotes();
+      notes[index] = value;
+      localStorage.setItem("zoeLearningNotes", JSON.stringify(notes));
+    }
+
+    function renderCards() {
+      const search = searchInput.value.toLowerCase();
+      const selectedType = typeFilter.value;
+      const selectedCategory = categoryFilter.value;
+      const notes = getNotes();
+      const progressLevels = getProgressLevels();
+
+      const filtered = profileData.filter((item, index) => {
+        const note = notes[index] || "";
+        const searchableText = `${item.area} ${item.type} ${item.category} ${item.example} ${item.strategy} ${note}`.toLowerCase();
+        const matchesSearch = searchableText.includes(search);
+        const matchesType = selectedType === "all" || item.type === selectedType;
+        const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+        return matchesSearch && matchesType && matchesCategory;
+      });
+
+      document.getElementById("totalCount").textContent = profileData.length;
+      document.getElementById("strengthCount").textContent = profileData.filter(x => x.type === "Strength").length;
+      document.getElementById("needCount").textContent = profileData.filter(x => x.type === "Need").length;
+
+      cardsGrid.innerHTML = "";
+
+      if (filtered.length === 0) {
+        cardsGrid.innerHTML = `<div class="empty">No matching area found.</div>`;
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const originalIndex = profileData.indexOf(item);
+        const noteValue = notes[originalIndex] || "";
+        const progressValue = progressLevels[originalIndex] || "";
+        const progressClass = progressValue.toLowerCase().replace(" ", "-");
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <span class="badge ${item.type === "Strength" ? "strength" : "need"}">${item.type} • ${item.category}</span>
+          <h3>${item.area}</h3>
+          <div class="example"><strong>Example:</strong> ${item.example}</div>
+          <div class="strategy-title">Suggested Support / Strategy:</div>
+          <div class="example">${item.strategy}</div>
+
+          <div class="progress-row">
+            <div class="progress-label">Progress Level:</div>
+            <select class="progress-select ${progressClass}" onchange="updateProgressColor(this)">
+              <option value="" ${progressValue === "" ? "selected" : ""}>Select progress level</option>
+              <option value="Improving" ${progressValue === "Improving" ? "selected" : ""}>Green – Improving</option>
+              <option value="Moderate" ${progressValue === "Moderate" ? "selected" : ""}>Yellow – Moderate</option>
+              <option value="Concern" ${progressValue === "Concern" ? "selected" : ""}>Red – Concern</option>
+            </select>
+          </div>
+
+          <div class="note-box">
+            <textarea placeholder="Add observation, progress note, school comment, or home example...">${noteValue}</textarea>
+            <div class="buttons">
+              <button onclick="saveCardNote(${originalIndex}, this)">Save Note & Progress</button>
+              <button class="secondary" onclick="clearCardNote(${originalIndex}, this)">Clear</button>
+            </div>
+          </div>
+        `;
+        cardsGrid.appendChild(card);
+      });
+    }
+
+    function saveCardNote(index, button) {
+      const card = button.closest(".card");
+      const textarea = card.querySelector("textarea");
+      const progressSelect = card.querySelector(".progress-select");
+      saveNote(index, textarea.value);
+      saveProgressLevel(index, progressSelect.value);
+      button.textContent = "Saved";
+      setTimeout(() => button.textContent = "Save Note & Progress", 1000);
+    }
+
+    function updateProgressColor(select) {
+      select.classList.remove("improving", "moderate", "concern");
+      if (select.value === "Improving") select.classList.add("improving");
+      if (select.value === "Moderate") select.classList.add("moderate");
+      if (select.value === "Concern") select.classList.add("concern");
+    }
+
+    function clearCardNote(index, button) {
+      const card = button.closest(".card");
+      const textarea = card.querySelector("textarea");
+      const progressSelect = card.querySelector(".progress-select");
+      textarea.value = "";
+      progressSelect.value = "";
+      updateProgressColor(progressSelect);
+      saveNote(index, "");
+      saveProgressLevel(index, "");
+    }
+
+    function clearAllNotes() {
+      const confirmed = confirm("Clear all saved notes?");
+      if (!confirmed) return;
+      localStorage.removeItem("zoeLearningNotes");
+      localStorage.removeItem("zoeProgressLevels");
+      renderCards();
+    }
+
+    function exportNotes() {
+      const notes = getNotes();
+      const progressLevels = getProgressLevels();
+      let content = "Zoe Learning Profile Notes
+
+";
+
+      profileData.forEach((item, index) => {
+        const note = notes[index];
+        const progress = progressLevels[index] || "";
+        if ((note && note.trim()) || progress) {
+          content += `${item.area} (${item.type} - ${item.category})
+`;
+          content += `Progress Level: ${progress || "Not selected"}
+`;
+          content += `Example: ${item.example}
+`;
+          content += `Strategy: ${item.strategy}
+`;
+          content += `Note: ${note || "No note added"}
+
+`;
+        }
+      });
+
+      if (content.trim() === "Zoe Learning Profile Notes") {
+        content += "No notes added yet.\n";
+      }
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "zoe-learning-profile-notes.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    searchInput.addEventListener("input", renderCards);
+    typeFilter.addEventListener("change", renderCards);
+    categoryFilter.addEventListener("change", renderCards);
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js");
+      });
+    }
+
+    renderCards();
+  </script>
+</body>
+</html>
